@@ -16,14 +16,6 @@ function ProjectSection() {
           projectLink="www.agomez.me"
           repoLink="https://github.com/IQuaintI/homepage-frontend"
         />
-        <ProjectCard
-          image="/path-to-your-image.jpg"
-          title="Project Title 2"
-          description="A brief description of the second project. Highlight key features or goals."
-          tools={['JavaScript', 'Django', 'HTML']}
-          projectLink="https://example.com/project2"
-          repoLink="https://github.com/username/project2"
-        />
       </div>
     </section>
   );
