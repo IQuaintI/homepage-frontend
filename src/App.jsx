@@ -11,7 +11,7 @@ function App() {
       {/* Navigation Bar */}
       <nav className="bg-gray-900 text-white flex justify-center gap-8 py-4">
         <a
-          href="https://www.linkedin.com/in/your-profile"
+          href="https://www.linkedin.com/in/alex-gomez-87309b12b/"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
@@ -19,7 +19,7 @@ function App() {
           LinkedIn
         </a>
         <a
-          href="/resume.pdf"
+          href="/images/Resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
@@ -27,7 +27,7 @@ function App() {
           Resume
         </a>
         <a
-          href="mailto:your-email@example.com"
+          href="mailto:alexgomez2797@gmail.com"
           className="hover:underline"
         >
           Contact
