@@ -29,6 +29,7 @@ function App() {
         <a
           href="mailto:alexgomez2797@gmail.com"
           className="hover:underline"
+          rel="noopener noreferrer"
         >
           Contact
         </a>
