@@ -9,12 +9,12 @@ function ProjectSection() {
       <div className="flex flex-col gap-8">
         {/* Example Project Cards */}
         <ProjectCard
-          image="/path-to-your-image.jpg"
-          title="Project Title 1"
-          description="A brief description of the first project. Highlight key features or goals."
-          tools={['React', 'Python', 'CSS']}
-          projectLink="https://example.com/project1"
-          repoLink="https://github.com/username/project1"
+          image="/images/Homesite.png"
+          title="Homepage"
+          description="The stumbling blocks that you find yourself on - React frontend with a Django back."
+          tools={['React', 'JavaScript', 'HTML', 'Python', 'CSS', 'Django']}
+          projectLink="www.agomez.me"
+          repoLink="https://github.com/IQuaintI/homepage-frontend"
         />
         <ProjectCard
           image="/path-to-your-image.jpg"
