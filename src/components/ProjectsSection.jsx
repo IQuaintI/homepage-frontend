@@ -13,8 +13,9 @@ function ProjectSection() {
           title="Homepage"
           description="The stumbling blocks that you find yourself on - React frontend with a Django back."
           tools={['React', 'JavaScript', 'HTML', 'Python', 'CSS', 'Django']}
-          projectLink="www.agomez.me"
+          projectLink=""
           repoLink="https://github.com/IQuaintI/homepage-frontend"
+          isCurrentPage={true} // This marks it as the current page
         />
       </div>
     </section>
@@ -22,3 +23,4 @@ function ProjectSection() {
 }
 
 export default ProjectSection;
+
