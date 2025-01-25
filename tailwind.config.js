@@ -1,10 +1,10 @@
-module.exports = {
+export default {
   content: [
-    "./index.html", // If using Vite, include this
-    "./src/**/*.{js,jsx,ts,tsx}", // Scan all files in the `src` folder
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html',
   ],
   theme: {
-    extend: {}, // You can customize your theme here
+    extend: {},
   },
   plugins: [],
 };

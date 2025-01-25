@@ -1,6 +1,5 @@
-const API_BASE_URL = "http://64.225.30.91"; // Replace with your backend's IP or domain
+const API_BASE_URL = "http://64.225.30.91"; // Backend URL
 
-// Example function to fetch data from an endpoint
 export const fetchSampleData = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/endpoint`);

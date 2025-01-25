@@ -5,10 +5,19 @@ function ProjectCard({
   title,
   description,
   tools,
-  projectLink = '', // Default value
+  projectLink = '',
   repoLink,
-  isCurrentPage = false, // Default value
+  isCurrentPage = false,
 }) {
+  const languageColors = {
+    React: 'hover:bg-blue-500',
+    Python: 'hover:bg-yellow-500',
+    CSS: 'hover:bg-purple-500',
+    JavaScript: 'hover:bg-red-400',
+    Django: 'hover:bg-green-500',
+    HTML: 'hover:bg-pink-500',
+  };
+
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
       <img src={image} alt={title} className="w-full md:w-1/3 object-cover" />
@@ -19,7 +28,9 @@ function ProjectCard({
           {tools.map((tool, index) => (
             <li
               key={index}
-              className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm transition hover:bg-gray-400"
+              className={`bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm transition cursor-default select-none ${
+                languageColors[tool] || 'hover:bg-gray-400'
+              }`}
             >
               {tool}
             </li>
@@ -34,27 +45,32 @@ function ProjectCard({
               >
                 View Project
               </button>
-              {/* Tooltip */}
-              <span className="absolute top-[-2.5rem] left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="absolute top-[-2rem] left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
                 You are already on this page
               </span>
             </div>
           ) : (
-            <a
-              href={projectLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-            >
-              View Project
-            </a>
+            <div className="relative group">
+              <a
+                href={projectLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition cursor-pointer"
+              >
+                View Project
+              </a>
+              {/* Tooltip */}
+              <span className="absolute top-[-2rem] left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300">
+                Click to view this project
+              </span>
+            </div>
           )}
           {/* Repository Link Button */}
           <a
             href={repoLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
+            className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition transform hover:scale-110 cursor-pointer"
           >
             View Code
           </a>
@@ -64,6 +80,7 @@ function ProjectCard({
   );
 }
 
+// Define PropTypes
 ProjectCard.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -72,6 +89,12 @@ ProjectCard.propTypes = {
   projectLink: PropTypes.string,
   repoLink: PropTypes.string.isRequired,
   isCurrentPage: PropTypes.bool,
+};
+
+// Define defaultProps
+ProjectCard.defaultProps = {
+  projectLink: '',
+  isCurrentPage: false,
 };
 
 export default ProjectCard;
