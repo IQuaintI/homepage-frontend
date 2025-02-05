@@ -68,7 +68,6 @@ function ProjectCard({
   );
 }
 
-
 // Define PropTypes
 ProjectCard.propTypes = {
   image: PropTypes.string.isRequired,

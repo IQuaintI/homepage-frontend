@@ -6,55 +6,47 @@ function WeatherDisplay({ data }) {
   const { weather, agriculture, maps } = data;
 
   return (
-    <div>
-      {/* Weather Section */}
-      <section>
-        <h2>Weather</h2>
-        <p>Temperature: {weather.main.temp}°C</p>
-        <p>Condition: {weather.weather[0].description}</p>
-      </section>
-
-      {/* Agriculture Section */}
-      <section>
-        <h2>Agricultural Data</h2>
-        <pre>{JSON.stringify(agriculture, null, 2)}</pre>
-      </section>
-
-      {/* Map Section */}
-      <section>
-        <h2>Maps</h2>
+    <div className="p-6 bg-white shadow-lg rounded-md max-w-lg mx-auto mt-6 border border-gray-200">
+      {weather && (
         <div>
-          <h3>Political Map</h3>
-          <img src={maps.political_map} alt="Political Map" />
+          <h2 className="text-xl font-bold text-center">{weather.name}</h2>
+          <p>🌡️ Temp: {weather.main.temp}°C</p>
+          <p>🌤️ Condition: {weather.weather[0].description}</p>
+          <p>💨 Wind: {weather.wind.speed} m/s</p>
         </div>
-        <div>
-          <h3>Crop Map</h3>
-          <p>{maps.crop_map}</p>
+      )}
+
+      {agriculture && (
+        <div className="mt-4 border-t pt-3">
+          <h3 className="text-lg font-bold">🌾 Agriculture Data</h3>
+          <p>💧 Humidity: {agriculture.main.humidity}%</p>
+          <p>🌡️ Temp: {agriculture.main.temp}°C</p>
+          <p>🌦️ Condition: {agriculture.weather[0].description}</p>
         </div>
-      </section>
+      )}
+
+      {maps && (
+        <div className="mt-4 border-t pt-3">
+          <h3 className="text-lg font-bold">🗺️ Maps</h3>
+          
+          {maps.political_map && (
+            <div className="mt-2">
+              <p>📍 Political Map:</p>
+              <img
+                src={maps.political_map}
+                alt="Political Map"
+                className="w-full rounded-md shadow-md border"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-// Add PropTypes
 WeatherDisplay.propTypes = {
-  data: PropTypes.shape({
-    weather: PropTypes.shape({
-      main: PropTypes.shape({
-        temp: PropTypes.number.isRequired,
-      }).isRequired,
-      weather: PropTypes.arrayOf(
-        PropTypes.shape({
-          description: PropTypes.string.isRequired,
-        })
-      ).isRequired,
-    }).isRequired,
-    agriculture: PropTypes.object.isRequired, // Adjust if you know the exact shape of agriculture data
-    maps: PropTypes.shape({
-      political_map: PropTypes.string.isRequired,
-      crop_map: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
+  data: PropTypes.object,
 };
 
 export default WeatherDisplay;
