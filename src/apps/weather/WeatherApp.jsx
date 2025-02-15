@@ -9,44 +9,82 @@ function WeatherApp({ defaultLocation = "" }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
 
   // 🔹 Fetch Weather & Wikipedia Summary Data
   const fetchWeatherData = async (selectedLocation) => {
-    if (!selectedLocation.trim()) {
-      setError("Please enter a valid location.");
-      return;
-    }
+    if (!selectedLocation.trim() || loading) return; // Prevent duplicate requests
+
+    setLoading(true); // Start loading
 
     try {
+      // 🔹 Fetch Exact Location from OpenStreetMap
+      const locationResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(selectedLocation)}&addressdetails=1&limit=1`
+      );
+
+      if (!locationResponse.ok) throw new Error("Failed to fetch location data");
+
+      const locationResult = await locationResponse.json();
+      if (locationResult.length === 0) throw new Error("No valid location found");
+
+      // 🔹 Extract Proper Location Format (e.g., "Orlando, Florida, United States")
+      const { lat, lon, display_name, address } = locationResult[0];
+
+      console.log("Verified Location:", display_name);
+      console.log("Latitude & Longitude:", lat, lon);
+
+      // 🔹 Format Wikipedia Search Term: "City, State"
+      let wikiSearchTerm = address.city || address.town || address.village || address.state;
+      if (address.state) {
+        wikiSearchTerm += `, ${address.state}`;
+      }
+      console.log("Wikipedia Search Term (First Attempt):", wikiSearchTerm);
+
       // 🔹 Fetch Weather Data
-      const response = await fetch(
-        `https://www.agomez.me/api/weather/combined-data?location=${encodeURIComponent(selectedLocation)}`
+      const weatherResponse = await fetch(
+        `https://www.agomez.me/api/weather/combined-data?location=${encodeURIComponent(display_name)}`
       );
 
-      if (!response.ok) throw new Error("Failed to fetch weather data");
+      if (!weatherResponse.ok) throw new Error("Failed to fetch weather data");
 
-      const weatherResult = await response.json();
+      const weatherResult = await weatherResponse.json();
+      console.log("Weather Data:", weatherResult);
 
-      console.log("Weather Data:", weatherResult); // ✅ Debugging Weather API Response
-
-      // 🔹 Fetch Wikipedia Summary Separately
-      const wikiResponse = await fetch(
-        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(selectedLocation)}`
+      // 🔹 Fetch Wikipedia Summary Using "City, State"
+      let wikiSummary = "No summary available.";
+      let wikiResponse = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiSearchTerm)}`
       );
 
-      let summaryText = "No summary available."; // Default value
+      if (!wikiResponse.ok) {
+        console.log("Wikipedia search failed. Retrying with City only...");
+        
+        // 🔹 Fallback: Try Searching Only "City"
+        const fallbackTerm = address.city || address.town || address.village || address.state;
+        console.log("Wikipedia Search Term (Retry):", fallbackTerm);
+
+        wikiResponse = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(fallbackTerm)}`
+        );
+      }
 
       if (wikiResponse.ok) {
         const wikiResult = await wikiResponse.json();
-        summaryText = wikiResult.extract || "No summary available."; // Use Wikipedia extract
+        if (wikiResult.extract && !wikiResult.extract.startsWith(`${wikiSearchTerm} commonly refers to:`)) {
+          wikiSummary = wikiResult.extract;
+        }
       }
 
-      console.log("Wikipedia Summary:", summaryText); // ✅ Debugging Wikipedia Summary
+      console.log("Wikipedia Summary:", wikiSummary);
 
-      // 🔹 Set the State with Both Weather & Wikipedia Summary
+      // 🔹 Set the State with Weather, Wiki Summary, and Coordinates
       setData({
         ...weatherResult,
-        summary: summaryText,
+        summary: wikiSummary,
+        lat: parseFloat(lat),
+        lon: parseFloat(lon),
       });
 
       setError("");
@@ -55,59 +93,45 @@ function WeatherApp({ defaultLocation = "" }) {
       console.error(err);
       setError("Could not retrieve data. Try again.");
       setData(null);
+    } finally {
+      setLoading(false); // Stop loading after request completes
     }
   };
 
-  // 🔹 Fetch Location Suggestions (Wikipedia API with Category Filtering)
+  // 🔹 Fetch Location Suggestions (Using OpenStreetMap) with Debounce
   const fetchLocationSuggestions = async (query) => {
     if (!query.trim()) {
       setSuggestions([]);
       return;
     }
 
-    try {
-      const response = await fetch(
-        `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch suggestions");
-
-      const result = await response.json();
-
-      // 🔹 Extract page titles
-      const pageTitles = result.query.search.map((entry) => entry.title);
-      const titlesParam = pageTitles.map((title) => encodeURIComponent(title)).join("|");
-
-      // 🔹 Fetch additional metadata to filter non-location results
-      const categoryResponse = await fetch(
-        `https://en.wikipedia.org/w/api.php?action=query&prop=categories&titles=${titlesParam}&format=json&origin=*`
-      );
-
-      if (!categoryResponse.ok) throw new Error("Failed to fetch category data");
-
-      const categoryData = await categoryResponse.json();
-
-      // 🔹 Filter only places (Cities, Countries, Populated places)
-      const filteredSuggestions = result.query.search.filter((entry) => {
-        const pageId = Object.keys(categoryData.query.pages).find(
-          (id) => categoryData.query.pages[id].title === entry.title
-        );
-
-        if (!pageId) return false;
-
-        const categories = categoryData.query.pages[pageId].categories || [];
-
-        return categories.some((cat) =>
-          ["Category:Populated places", "Category:Cities", "Category:Towns", "Category:Villages", "Category:Countries", "Category:Geography"]
-            .some(validCategory => cat.title.includes(validCategory))
-        );
-      });
-
-      setSuggestions([...new Set(filteredSuggestions.map((s) => s.title))].slice(0, 5)); // ✅ Remove duplicates & limit to 5
-    } catch (err) {
-      console.error("Error fetching location suggestions:", err);
-      setSuggestions([]);
+    if (typingTimeout) {
+      clearTimeout(typingTimeout); // ✅ Cancel previous API call
     }
+
+    setTypingTimeout(
+      setTimeout(async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5`
+          );
+
+          if (!response.ok) throw new Error("Failed to fetch location suggestions");
+
+          const result = await response.json();
+
+          // 🔹 Convert result to "City, State, Country" format
+          const formattedSuggestions = result
+            .filter((place) => place.address && (place.address.city || place.address.town || place.address.village))
+            .map((place) => place.display_name); // ✅ Use `display_name` from OSM
+
+          setSuggestions([...new Set(formattedSuggestions)]); // ✅ Remove duplicates
+        } catch (err) {
+          console.error("Error fetching location suggestions:", err);
+          setSuggestions([]);
+        }
+      }, 500) // ✅ Delay API call by 500ms to prevent spam requests
+    );
   };
 
   return (
@@ -139,7 +163,9 @@ function WeatherApp({ defaultLocation = "" }) {
             ))}
           </ul>
         )}
-        <Button onClick={() => fetchWeatherData(location)}>Search</Button>
+        <Button onClick={() => fetchWeatherData(location)} disabled={loading}>
+          {loading ? "Loading..." : "Search"}
+        </Button>
       </div>
 
       {/* 🔹 Error Message */}
@@ -152,8 +178,8 @@ function WeatherApp({ defaultLocation = "" }) {
           condition={data.weather.weather[0].description}
           windSpeed={data.weather.wind.speed}
           summary={data.summary} 
-          lat={data.weather.coord.lat} 
-          lon={data.weather.coord.lon}
+          lat={data.lat} 
+          lon={data.lon}
         />
       )}
     </div>
@@ -165,3 +191,4 @@ WeatherApp.propTypes = {
 };
 
 export default WeatherApp;
+

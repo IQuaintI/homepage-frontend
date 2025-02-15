@@ -29,7 +29,7 @@ export default function LocationInfo({ temperature, condition, windSpeed, summar
               scrolling="no"
               marginHeight="0"
               marginWidth="0"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.3},${lat - 0.3},${lon + 0.3},${lat + 0.3}&layer=mapnik`}
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}&layer=mapnik`}
               style={{ border: "1px solid black", borderRadius: "8px" }}
             ></iframe>
           </Card>
@@ -45,7 +45,6 @@ export default function LocationInfo({ temperature, condition, windSpeed, summar
   );
 }
 
-/* 🔹 Fixed PropTypes Validation */
 LocationInfo.propTypes = {
   temperature: PropTypes.number.isRequired,
   condition: PropTypes.string.isRequired,
