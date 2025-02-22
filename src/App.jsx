@@ -72,8 +72,8 @@ function App() {
         {/* 🔹 Routes for Navigation */}
         <Routes>
           <Route path="/" element={<ProjectSection />} />
-          <Route path="/weatherapp" element={<WeatherApp />} />
-          <Route path="*" element={<h1 className="text-center p-8">404 - Page Not Found</h1>} />
+          <Route path="/weatherapp/*" element={<WeatherApp />} />
+          <Route path="*" element={<h1 className="text-center p-8 text-red-600">404 - Page Not Found</h1>} />
         </Routes>
       </div>
     </Router>
