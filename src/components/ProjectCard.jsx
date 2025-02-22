@@ -11,7 +11,7 @@ function ProjectCard({
   isCurrentPage = false,
 }) {
   return (
-    <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative min-h-[280px]"> 
+    <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative min-h-[280px]">
       {/* Image Container with Dynamic Sizing */}
       <div className="w-full md:w-1/3 flex-shrink-0">
         <img
@@ -46,19 +46,32 @@ function ProjectCard({
               View Project
             </button>
           ) : (
-            <a href={projectLink} className="bg-blue-500 text-white px-4 py-2 rounded">
+            <a
+              href={projectLink}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+            >
               View Project
             </a>
           )}
 
           {/* View Code */}
-          <a href={repoLink} target="_blank" className="bg-gray-800 text-white px-4 py-2 rounded">
+          <a
+            href={repoLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
+          >
             View Code
           </a>
 
           {/* Docs */}
           {docsLink && (
-            <a href={docsLink} target="_blank" className="bg-green-600 text-white px-4 py-2 rounded">
+            <a
+              href={docsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
               Docs
             </a>
           )}
@@ -78,13 +91,6 @@ ProjectCard.propTypes = {
   repoLink: PropTypes.string.isRequired,
   docsLink: PropTypes.string,
   isCurrentPage: PropTypes.bool,
-};
-
-// Define defaultProps
-ProjectCard.defaultProps = {
-  projectLink: "",
-  docsLink: "",
-  isCurrentPage: false,
 };
 
 export default ProjectCard;

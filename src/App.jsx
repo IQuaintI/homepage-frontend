@@ -1,9 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useEffect } from "react";
 import Header from "./components/Header";
 import ProjectSection from "./components/ProjectsSection";
 import WeatherApp from "./apps/weather/WeatherApp";
 
 function App() {
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    console.log("VITE_API_URL:", apiUrl);
+
+    fetch(`${apiUrl}/core/endpoint`)
+      .then(response => response.json())
+      .then(data => console.log("API Response:", data))
+      .catch(error => console.error("Fetch Error:", error));
+  }, []);
+
   return (
     <Router>
       <div className="bg-gray-100 min-h-screen">
@@ -35,6 +47,9 @@ function App() {
           >
             Contact
           </a>
+          {/* Internal Navigation */}
+          <Link to="/" className="hover:underline">Projects</Link>
+          <Link to="/weatherapp" className="hover:underline">Weather App</Link>
         </nav>
 
         <div className="border-t-2 border-gray-700"></div>
