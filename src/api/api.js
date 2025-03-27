@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://64.225.30.91"; // Backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://agomez.me/api";
 
 export const fetchSampleData = async () => {
   try {

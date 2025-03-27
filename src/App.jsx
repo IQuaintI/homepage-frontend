@@ -1,29 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import ProjectSection from "./components/ProjectsSection";
 import WeatherApp from "./apps/weather/WeatherApp";
 
 function App() {
-  const [apiMessage, setApiMessage] = useState("");
-
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    
-    console.log("VITE_API_URL:", apiUrl);
-
-    fetch(`${apiUrl}/core/endpoint`)
-      .then(response => {
-        if (!response.ok) throw new Error("API request failed");
-        return response.json();
-      })
-      .then(data => {
-        console.log("API Response:", data);
-        setApiMessage(data.message);
-      })
-      .catch(error => console.error("Fetch Error:", error));
-  }, []);
-
   return (
     <Router>
       <div className="bg-gray-100 min-h-screen">
@@ -61,13 +41,6 @@ function App() {
         </nav>
 
         <div className="border-t-2 border-gray-700"></div>
-
-        {/* 🔹 Display API Message (For Debugging) */}
-        {apiMessage && (
-          <div className="p-4 text-center text-green-600 font-bold">
-            Backend says: {apiMessage}
-          </div>
-        )}
 
         {/* 🔹 Routes for Navigation */}
         <Routes>

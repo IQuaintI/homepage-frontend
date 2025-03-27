@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import LocationInfo from "../../apps/weather/components/LocationInfo";
 import { Input } from "../../components/weather/Input";
 import { Button } from "../../components/weather/Button";
-import { fetchLocationSuggestions, fetchWeatherData } from "../weather/components/LocationService";
+import {
+  fetchLocationSuggestions,
+  fetchWeatherData,
+} from "../weather/components/LocationService";
 
 function WeatherApp({ defaultLocation = "" }) {
   const [location, setLocation] = useState(defaultLocation);
@@ -11,20 +14,56 @@ function WeatherApp({ defaultLocation = "" }) {
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  // 🔹 Handle Location Input & Fetch Suggestions
-  const handleLocationInput = (query) => {
+  const wrapperRef = useRef(null); // 🔹 Ref for click-outside detection
+
+  // 🔹 Click outside to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setSuggestions([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 🔹 Fetch Location Suggestions
+  const handleLocationInput = async (query) => {
     setLocation(query);
-    fetchLocationSuggestions(query).then(setSuggestions); // ✅ Uses API function
+
+    if (query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const suggestions = await fetchLocationSuggestions(query);
+      setSuggestions(suggestions.length ? suggestions : []);
+    } catch (err) {
+      console.error("Failed to fetch suggestions:", err);
+      setSuggestions([]);
+    }
   };
 
-  // 🔹 Handle Weather Search & Fetch Data
-  const handleWeatherSearch = async () => {
+  // 🔹 Fetch Weather Data
+  const handleWeatherSearch = async (selectedLocation = location) => {
+    const safeLocation =
+      typeof selectedLocation === "string"
+        ? selectedLocation
+        : selectedLocation?.name;
+
+    if (!safeLocation || !safeLocation.trim()) {
+      setError("Please enter a valid location.");
+      return;
+    }
+
     try {
-      const weatherData = await fetchWeatherData(location); // ✅ Uses API function
+      const weatherData = await fetchWeatherData(safeLocation);
       setData(weatherData);
       setError("");
     } catch (err) {
-      console.error(err);
+      console.error("Weather fetch error:", err);
       setError("Could not retrieve data. Try again.");
       setData(null);
     }
@@ -32,8 +71,11 @@ function WeatherApp({ defaultLocation = "" }) {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-      {/* 🔹 Input Section */}
-      <div className="w-full max-w-md flex flex-col relative mb-6">
+      {/* 🔹 Input & Dropdown Suggestions */}
+      <div
+        ref={wrapperRef}
+        className="w-full max-w-md flex flex-col relative mb-6"
+      >
         <Input
           value={location}
           onChange={(e) => handleLocationInput(e.target.value)}
@@ -46,31 +88,34 @@ function WeatherApp({ defaultLocation = "" }) {
                 key={index}
                 className="p-2 hover:bg-gray-200 cursor-pointer"
                 onClick={() => {
-                  setLocation(suggestion);
-                  handleWeatherSearch();
+                  const locationName = suggestion.name;
+                  setLocation(locationName);
+                  handleWeatherSearch(locationName);
                   setSuggestions([]);
                 }}
               >
-                {suggestion}
+                {suggestion.name}{" "}
+                {suggestion.state ? `, ${suggestion.state}` : ""} (
+                {suggestion.country})
               </li>
             ))}
           </ul>
         )}
-        <Button onClick={handleWeatherSearch}>Search</Button>
+        <Button onClick={() => handleWeatherSearch()}>Search</Button>
       </div>
 
       {/* 🔹 Error Message */}
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* 🔹 Display Weather Info */}
+      {/* 🔹 Weather Info */}
       {data && (
         <LocationInfo
-          temperature={data.weather.main.temp}
-          condition={data.weather.weather[0].description}
-          windSpeed={data.weather.wind.speed}
-          summary={data.summary}
-          lat={data.lat}
-          lon={data.lon}
+          temperature={data?.weather?.main?.temp ?? "N/A"}
+          condition={data?.weather?.weather?.[0]?.description ?? "Unknown"}
+          windSpeed={data?.weather?.wind?.speed ?? 0}
+          summary={data?.summary ?? "No summary available"}
+          lat={data?.lat ?? "Unknown"}
+          lon={data?.lon ?? "Unknown"}
         />
       )}
     </div>
@@ -82,4 +127,3 @@ WeatherApp.propTypes = {
 };
 
 export default WeatherApp;
-

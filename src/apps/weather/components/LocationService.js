@@ -1,14 +1,20 @@
-const API_BASE_URL = "http://64.225.30.91/api"; // ✅ Use your backend server IP
+const API_BASE_URL = import.meta.env.VITE_API_URL || "https://agomez.me/api/weather";
 
 // 🔹 Fetch Location Suggestions
 export const fetchLocationSuggestions = async (query) => {
-  if (!query.trim()) return [];
+  if (typeof query !== "string" || !query.trim()) return [];
 
   try {
-    const response = await fetch(`${API_BASE_URL}/location-suggestions?q=${encodeURIComponent(query)}`);
-    if (!response.ok) throw new Error("Failed to fetch location suggestions");
+    const response = await fetch(
+      `${API_BASE_URL}/location-suggestions/?query=${encodeURIComponent(query)}`
+    );
 
-    return await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to fetch location suggestions");
+    }
+
+    const data = await response.json();
+    return data.suggestions || [];
   } catch (err) {
     console.error("Error fetching location suggestions:", err);
     return [];
@@ -17,13 +23,18 @@ export const fetchLocationSuggestions = async (query) => {
 
 // 🔹 Fetch Weather Data
 export const fetchWeatherData = async (selectedLocation) => {
-  if (!selectedLocation.trim()) {
+  if (typeof selectedLocation !== "string" || !selectedLocation.trim()) {
     throw new Error("Please enter a valid location.");
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/weather?location=${encodeURIComponent(selectedLocation)}`);
-    if (!response.ok) throw new Error("Failed to fetch weather data");
+    const response = await fetch(
+      `${API_BASE_URL}/fetch/?location=${encodeURIComponent(selectedLocation)}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch weather data");
+    }
 
     return await response.json();
   } catch (err) {
@@ -31,4 +42,3 @@ export const fetchWeatherData = async (selectedLocation) => {
     throw err;
   }
 };
-
