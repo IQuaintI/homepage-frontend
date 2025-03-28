@@ -14,12 +14,18 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
 
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "src"), // 🔥 Alias added here
+      },
+    },
+
     server: {
       proxy: {
         "/api": {
-          target: env.VITE_API_URL || "https://your-secure-api.com", // Ensure HTTPS
+          target: env.VITE_API_URL || "https://your-secure-api.com",
           changeOrigin: true,
-          secure: true, // Force HTTPS requests
+          secure: true,
         },
       },
     },
@@ -35,6 +41,6 @@ export default defineConfig(({ mode }) => {
       "import.meta.env.VITE_API_URL": JSON.stringify(env.VITE_API_URL || "https://your-secure-api.com"),
     },
 
-    envDir: __dirname, // Ensure Vite loads `.env` from the root directory
+    envDir: __dirname,
   };
 });

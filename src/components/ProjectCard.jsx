@@ -10,9 +10,18 @@ function ProjectCard({
   docsLink = "",
   isCurrentPage = false,
 }) {
+  const hoverColors = {
+    React: "hover:bg-blue-200",
+    JavaScript: "hover:bg-yellow-200",
+    HTML: "hover:bg-orange-200",
+    CSS: "hover:bg-sky-200",
+    Python: "hover:bg-pink-200",
+    Django: "hover:bg-emerald-200",
+    API: "hover:bg-purple-200",
+  };
+
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative min-h-[280px]">
-      {/* Image Container with Dynamic Sizing */}
       <div className="w-full md:w-1/3 flex-shrink-0">
         <img
           src={image}
@@ -21,30 +30,29 @@ function ProjectCard({
         />
       </div>
 
-      {/* Project Details */}
       <div className="p-6 flex flex-col flex-grow text-center">
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-gray-600 mb-4">{description}</p>
 
-        {/* Tech Stack */}
         <ul className="flex flex-wrap justify-center gap-2 mb-4">
           {tools.map((tool, index) => (
             <li
               key={index}
-              className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm"
+              className={`bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm transition-colors duration-200 cursor-default ${hoverColors[tool] || "hover:bg-gray-300"}`}
             >
               {tool}
             </li>
           ))}
         </ul>
 
-        {/* Buttons */}
         <div className="mt-auto flex gap-4 justify-center">
-          {/* View Project */}
           {isCurrentPage ? (
-            <button className="bg-gray-300 text-gray-700 px-4 py-2 rounded cursor-not-allowed">
+            <span
+              title="You are currently on this page"
+              className="bg-gray-300 text-gray-700 px-4 py-2 rounded cursor-not-allowed"
+            >
               View Project
-            </button>
+            </span>
           ) : (
             <a
               href={projectLink}
@@ -54,7 +62,6 @@ function ProjectCard({
             </a>
           )}
 
-          {/* View Code */}
           <a
             href={repoLink}
             target="_blank"
@@ -64,7 +71,6 @@ function ProjectCard({
             View Code
           </a>
 
-          {/* Docs */}
           {docsLink && (
             <a
               href={docsLink}
@@ -81,7 +87,6 @@ function ProjectCard({
   );
 }
 
-// Define PropTypes
 ProjectCard.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,

@@ -11,7 +11,7 @@ function ProjectSection() {
             image="/images/Homesite.png"
             title="Homepage"
             description="The stumbling blocks that you find yourself on - React frontend with a Django back."
-            tools={['React', 'JavaScript', 'HTML', 'Python', 'CSS', 'Django']}
+            tools={['React', 'JavaScript', 'Python', 'Django', 'HTML', 'CSS']}
             projectLink="/"
             repoLink="https://github.com/IQuaintI/homepage-frontend"
             docsLink="/docs/homepage"
@@ -20,15 +20,16 @@ function ProjectSection() {
 
           {/* Weather & Agriculture Project */}
           <ProjectCard
-            image="/images/Homesite.png"
-            title="Weather & Agriculture"
-            description="A weather and agriculture data visualization app."
-            tools={['React', 'JavaScript', 'Python', 'Django', 'API']}
-            projectLink="/weatherapp"
-            repoLink="https://github.com/IQuaintI/weather-app"
-            docsLink="/docs/weather"
-            isCurrentPage={false}
-          />
+  image="/images/Homesite.png"
+  title="Weather"
+  description="A weather data visualization app."
+  tools={['React', 'JavaScript', 'Python', 'Django', 'API']}
+  projectLink="/WeatherApp"
+  repoLink="https://github.com/IQuaintI/weather-app"
+  docsLink="/docs/weather"
+  isCurrentPage={false}
+/>
+
         </div>
       </section>
 
@@ -39,5 +40,3 @@ function ProjectSection() {
 }
 
 export default ProjectSection;
-
-
