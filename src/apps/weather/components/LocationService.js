@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://agomez.me/api/weather";
+// src/weather/components/LocationService.js
+
+const baseURL = import.meta.env.VITE_API_URL || "/api/weather";
 
 // 🔹 Fetch Location Suggestions
 export const fetchLocationSuggestions = async (query) => {
@@ -6,7 +8,7 @@ export const fetchLocationSuggestions = async (query) => {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/location-suggestions/?query=${encodeURIComponent(query)}`
+      `${baseURL}/location-suggestions/?query=${encodeURIComponent(query)}`
     );
 
     if (!response.ok) {
@@ -22,14 +24,14 @@ export const fetchLocationSuggestions = async (query) => {
 };
 
 // 🔹 Fetch Weather Data
-export const fetchWeatherData = async (selectedLocation) => {
-  if (typeof selectedLocation !== "string" || !selectedLocation.trim()) {
+export const fetchWeatherData = async (location) => {
+  if (typeof location !== "string" || !location.trim()) {
     throw new Error("Please enter a valid location.");
   }
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/fetch/?location=${encodeURIComponent(selectedLocation)}`
+      `${baseURL}/fetch/?location=${encodeURIComponent(location)}`
     );
 
     if (!response.ok) {

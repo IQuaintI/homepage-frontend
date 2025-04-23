@@ -3,6 +3,8 @@ import Header from "./components/Header";
 import ProjectSection from "./components/ProjectsSection";
 import About from "./components/About";
 import WeatherApp from "./apps/weather/WeatherApp";
+import HomepageMarkdownPage from "./docs/Homepage_Markdown";
+import RecipesApp from "./apps/recipes/RecipesApp";
 
 function App() {
   return (
@@ -59,6 +61,8 @@ function App() {
           <Route path="/" element={<ProjectSection />} />
           <Route path="/about" element={<About />} />
           <Route path="/WeatherApp" element={<WeatherApp />} />
+          <Route path="/docs/homepage" element={<HomepageMarkdownPage filePath="/homepage.md" />}/>
+          <Route path="/recipes" element={<RecipesApp />} />
           <Route
             path="*"
             element={

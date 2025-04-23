@@ -22,11 +22,11 @@ function ProjectCard({
 
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative min-h-[280px]">
-      <div className="w-full md:w-1/3 flex-shrink-0">
+      <div className="w-full md:w-1/3 flex-shrink-0 h-[280px] md:h-auto">
         <img
           src={image}
           alt={title}
-          className="w-full h-[200px] md:h-full object-cover"
+          className="w-full h-full object-cover"
         />
       </div>
 
@@ -99,3 +99,4 @@ ProjectCard.propTypes = {
 };
 
 export default ProjectCard;
+

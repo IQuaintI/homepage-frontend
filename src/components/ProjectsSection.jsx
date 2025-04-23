@@ -20,12 +20,12 @@ function ProjectSection() {
 
           {/* Weather & Agriculture Project */}
           <ProjectCard
-  image="/images/Homesite.png"
+  image="/images/Weather.png"
   title="Weather"
   description="A weather data visualization app."
   tools={['React', 'JavaScript', 'Python', 'Django', 'API']}
   projectLink="/WeatherApp"
-  repoLink="https://github.com/IQuaintI/weather-app"
+  repoLink="https://github.com/IQuaintI/homepage-frontend"
   docsLink="/docs/weather"
   isCurrentPage={false}
 />
