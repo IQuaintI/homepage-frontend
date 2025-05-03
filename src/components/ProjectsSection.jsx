@@ -20,16 +20,27 @@ function ProjectSection() {
 
           {/* Weather & Agriculture Project */}
           <ProjectCard
-  image="/images/Weather.png"
-  title="Weather"
-  description="A weather data visualization app."
-  tools={['React', 'JavaScript', 'Python', 'Django', 'API']}
-  projectLink="/WeatherApp"
-  repoLink="https://github.com/IQuaintI/homepage-frontend"
-  docsLink="/docs/weather"
-  isCurrentPage={false}
-/>
+            image="/images/Weather.png"
+            title="Weather"
+            description="A weather data visualization app."
+            tools={['React', 'JavaScript', 'Python', 'Django', 'API']}
+            projectLink="/WeatherApp"
+            repoLink="https://github.com/IQuaintI/homepage-frontend"
+            docsLink="/docs/weather"
+            isCurrentPage={false}
+          />
 
+          {/* Recipes Project */}
+          <ProjectCard
+            image="/images/RecipeBook.png"
+            title="Recipes"
+            description="A CRUD-based recipe manager with image picker, slide-out editor, and dynamic UI."
+            tools={['React', 'JavaScript', 'Python', 'Django', 'MSW']}
+            projectLink="/recipes"
+            repoLink="https://github.com/IQuaintI/homepage-frontend"
+            docsLink="/docs/recipes"
+            isCurrentPage={false}
+          />
         </div>
       </section>
 

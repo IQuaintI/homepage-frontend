@@ -18,6 +18,7 @@ function ProjectCard({
     Python: "hover:bg-pink-200",
     Django: "hover:bg-emerald-200",
     API: "hover:bg-purple-200",
+    MSW: "hover:bg-teal-200",
   };
 
   return (

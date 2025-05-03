@@ -1,26 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import App from "./App.jsx";
 import "./index.css";
 
-if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCK === "true") {
-  console.log("🧪 Booting MSW...");
-  import("./mocks/browser")
-    .then(({ worker }) => {
-      return worker.start({
-        onUnhandledRequest: "warn", // Log unhandled requests
-      });
-    })
-    .then(() => {
-      console.log("✅ MSW started");
-    })
-    .catch((err) => {
-      console.error("❌ Failed to start MSW:", err);
+async function prepare() {
+  if (import.meta.env.DEV && import.meta.env.VITE_USE_MSW === "true") {
+    const { worker } = await import("./mocks/browser");
+    await worker.start({
+      onUnhandledRequest: "warn",
     });
+    console.log("✅ MSW started");
+  }
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+prepare().then(() => {
+  ReactDOM.createRoot(document.getElementById("root")).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+});

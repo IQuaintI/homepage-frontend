@@ -1,12 +1,10 @@
 const recipes = [
   {
     id: 1,
-    title: "Spaghetti",
-    description: "Classic pasta with red sauce.",
-    ingredients: "Pasta, Tomato, Garlic",
-    steps: "Boil, mix, serve",
-    image: "/media/spaghetti.jpg",
-    created_by: "mock_user",
+    title: "Test Recipe",
+    description: "This is a test recipe.",
+    ingredients: "Water, Air",
+    steps: "Mix well",
     created_at: new Date().toISOString(),
   },
 ];
